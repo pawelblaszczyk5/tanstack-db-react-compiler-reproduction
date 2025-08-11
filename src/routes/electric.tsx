@@ -1,10 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useLiveQuery } from "@tanstack/react-db"
+import { createFileRoute } from "@tanstack/react-router";
+import { useLiveQuery } from "@tanstack/react-db";
 import {
   electricConfigCollection,
   electricTodoCollection,
-} from "../lib/collections"
-import { TodoApp } from "../components/TodoApp"
+} from "../lib/collections";
+import { TodoApp } from "../components/TodoApp";
 
 export const Route = createFileRoute(`/electric`)({
   component: ElectricPage,
@@ -15,21 +15,19 @@ export const Route = createFileRoute(`/electric`)({
       electricConfigCollection.preload(),
     ])
 
-    return null
+    return null;
   },
-})
+});
 
 function ElectricPage() {
   // Get data using live queries with Electric collections
   const { data: todos } = useLiveQuery((q) =>
-    q
-      .from({ todo: electricTodoCollection })
-      .orderBy(({ todo }) => todo.created_at, `asc`)
-  )
+    q.from({ todo: electricTodoCollection })
+  );
 
   const { data: configData } = useLiveQuery((q) =>
     q.from({ config: electricConfigCollection })
-  )
+  );
 
   return (
     <TodoApp
@@ -39,5 +37,5 @@ function ElectricPage() {
       configCollection={electricConfigCollection}
       title="todos (electric)"
     />
-  )
+  );
 }

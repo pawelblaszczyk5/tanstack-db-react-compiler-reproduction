@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router";
 
 export function NotFound() {
   return (
@@ -20,24 +20,14 @@ export function NotFound() {
           </Link>
 
           <div className="flex space-x-4">
-            <Link to="/query" className="flex-1">
-              <button className="w-full px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm">
-                Query Demo
-              </button>
-            </Link>
             <Link to="/electric" className="flex-1">
               <button className="w-full px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm">
                 Electric Demo
-              </button>
-            </Link>
-            <Link to="/trailbase" className="flex-1">
-              <button className="w-full px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm">
-                TrailBase Demo
               </button>
             </Link>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
