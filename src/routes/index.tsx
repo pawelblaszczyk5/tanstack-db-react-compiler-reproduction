@@ -1,8 +1,8 @@
-import { Link, createFileRoute } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute(`/`)({
   component: HomePage,
-})
+});
 
 function HomePage() {
   return (
@@ -18,27 +18,11 @@ function HomePage() {
         </p>
 
         <div className="space-y-4">
-          <Link to="/query" className="block w-full">
-            <button className="w-full px-6 py-4 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors text-left">
-              <div className="font-semibold">Query Collections</div>
-              <div className="text-sm opacity-90 mt-1">
-                Traditional polling with TanStack Query
-              </div>
-            </button>
-          </Link>
           <Link to="/electric" className="block w-full">
             <button className="w-full px-6 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-left">
               <div className="font-semibold">Electric Collections</div>
               <div className="text-sm opacity-90 mt-1">
                 Real-time sync with ElectricSQL
-              </div>
-            </button>
-          </Link>
-          <Link to="/trailbase" className="block w-full">
-            <button className="w-full px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-left">
-              <div className="font-semibold">TrailBase Collections</div>
-              <div className="text-sm opacity-90 mt-1">
-                Real-time sync with TrailBase
               </div>
             </button>
           </Link>
@@ -50,5 +34,5 @@ function HomePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

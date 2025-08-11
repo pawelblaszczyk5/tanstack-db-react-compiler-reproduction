@@ -9,7 +9,6 @@
     "@tanstack/react-db": "^0.1.0",
     "@tanstack/react-router": "^1.125.6",
     "@tanstack/react-start": "^1.126.1",
-    "@tanstack/trailbase-db-collection": "^0.1.0",
     "cors": "^2.8.5",
     "drizzle-orm": "^0.40.1",
     "drizzle-zod": "^0.7.0",
@@ -19,7 +18,8 @@
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.11",
     "trailbase": "^0.7.1",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
@@ -32,7 +32,7 @@
     "@types/react-dom": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^5.0.0",
     "concurrently": "^9.2.0",
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.30.5",
@@ -54,5 +54,6 @@
     "lint": "eslint . --fix",
     "preview": "vite preview"
   },
-  "type": "module"
+  "type": "module",
+  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
 }

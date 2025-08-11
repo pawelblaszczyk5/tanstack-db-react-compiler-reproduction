@@ -1,17 +1,17 @@
-import React, { useState } from "react"
-import { Link } from "@tanstack/react-router"
-import type { FormEvent } from "react"
-import type { Collection } from "@tanstack/react-db"
+import React, { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import type { FormEvent } from "react";
+import type { Collection } from "@tanstack/react-db";
 
-import type { SelectConfig, SelectTodo } from "@/db/validation"
-import { getComplementaryColor } from "@/lib/color"
+import type { SelectConfig, SelectTodo } from "@/db/validation";
+import { getComplementaryColor } from "@/lib/color";
 
 interface TodoAppProps {
-  todos: Array<SelectTodo>
-  configData: Array<SelectConfig>
-  todoCollection: Collection<SelectTodo>
-  configCollection: Collection<SelectConfig>
-  title: string
+  todos: Array<SelectTodo>;
+  configData: Array<SelectConfig>;
+  todoCollection: Collection<SelectTodo>;
+  configCollection: Collection<SelectConfig>;
+  title: string;
 }
 
 export function TodoApp({
@@ -21,26 +21,26 @@ export function TodoApp({
   configCollection,
   title,
 }: TodoAppProps) {
-  const [newTodo, setNewTodo] = useState(``)
+  const [newTodo, setNewTodo] = useState(``);
 
   // Define a type-safe helper function to get config values
   const getConfigValue = (key: string): string | undefined => {
     for (const config of configData) {
       if (config.key === key) {
-        return config.value
+        return config.value;
       }
     }
-    return undefined
-  }
+    return undefined;
+  };
 
   // Define a helper function to update config values
   const setConfigValue = (key: string, value: string): void => {
     for (const config of configData) {
       if (config.key === key) {
         configCollection.update(config.id, (draft) => {
-          draft.value = value
-        })
-        return
+          draft.value = value;
+        });
+        return;
       }
     }
 
@@ -51,21 +51,21 @@ export function TodoApp({
       value,
       created_at: new Date(),
       updated_at: new Date(),
-    })
-  }
+    });
+  };
 
-  const backgroundColor = getConfigValue(`backgroundColor`)
-  const titleColor = getComplementaryColor(backgroundColor)
+  const backgroundColor = getConfigValue(`backgroundColor`);
+  const titleColor = getComplementaryColor(backgroundColor);
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value
-    setConfigValue(`backgroundColor`, newColor)
-  }
+    const newColor = e.target.value;
+    setConfigValue(`backgroundColor`, newColor);
+  };
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    const todo = newTodo.trim()
-    setNewTodo(``)
+    e.preventDefault();
+    const todo = newTodo.trim();
+    setNewTodo(``);
 
     if (todo) {
       todoCollection.insert({
@@ -74,12 +74,12 @@ export function TodoApp({
         id: Math.round(Math.random() * 1000000),
         created_at: new Date(),
         updated_at: new Date(),
-      })
+      });
     }
-  }
+  };
 
-  const activeTodos = todos.filter((todo) => !todo.completed)
-  const completedTodos = todos.filter((todo) => todo.completed)
+  const activeTodos = todos.filter((todo) => !todo.completed);
+  const completedTodos = todos.filter((todo) => todo.completed);
 
   return (
     <main
@@ -123,7 +123,7 @@ export function TodoApp({
               disabled={todos.length === 0}
               onClick={() => {
                 const todosToToggle =
-                  activeTodos.length > 0 ? activeTodos : completedTodos
+                  activeTodos.length > 0 ? activeTodos : completedTodos;
 
                 todoCollection.update(
                   todosToToggle.map((todo) => todo.id),
@@ -131,7 +131,7 @@ export function TodoApp({
                     drafts.forEach(
                       (draft) => (draft.completed = !draft.completed)
                     )
-                )
+                );
               }}
             >
               ❯
@@ -157,13 +157,15 @@ export function TodoApp({
                     checked={todo.completed}
                     onChange={() =>
                       todoCollection.update(todo.id, (draft) => {
-                        draft.completed = !draft.completed
+                        draft.completed = !draft.completed;
                       })
                     }
                     className="absolute left-[12px] size-[40px] cursor-pointer"
                   />
                   <label
-                    className={`block p-[15px] text-2xl transition-colors ${todo.completed ? `text-[#d9d9d9] line-through` : ``}`}
+                    className={`block p-[15px] text-2xl transition-colors ${
+                      todo.completed ? `text-[#d9d9d9] line-through` : ``
+                    }`}
                   >
                     {todo.text}
                   </label>
@@ -180,7 +182,9 @@ export function TodoApp({
 
           <footer className="text-[14px] text-[#777] px-[15px] h-[40px] border-t border-[#e6e6e6] flex justify-between items-center">
             <span>
-              {`${activeTodos.length} ${activeTodos.length === 1 ? `item` : `items`} left`}
+              {`${activeTodos.length} ${
+                activeTodos.length === 1 ? `item` : `items`
+              } left`}
             </span>
 
             {completedTodos.length > 0 && (
@@ -197,16 +201,12 @@ export function TodoApp({
         </div>
       </div>
     </main>
-  )
+  );
 }
 
 function Navigation() {
-  const style = `px-4 py-2 text-white rounded transition-colors`
-  const links = [
-    [`/query`, `Query`, `bg-green-700 hover:bg-green-800`],
-    [`/electric`, `Electric`, `bg-blue-500 hover:bg-blue-600`],
-    [`/trailbase`, `TrailBase`, `bg-purple-600 hover:bg-purple-700`],
-  ]
+  const style = `px-4 py-2 text-white rounded transition-colors`;
+  const links = [[`/electric`, `Electric`, `bg-blue-500 hover:bg-blue-600`]];
 
   return (
     <nav className="flex justify-center gap-4 mb-4">
@@ -220,5 +220,5 @@ function Navigation() {
         </Link>
       ))}
     </nav>
-  )
+  );
 }
