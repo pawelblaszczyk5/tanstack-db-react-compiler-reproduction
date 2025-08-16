@@ -82,3 +82,10 @@ export const test = createCollection(
     getKey: (userPreference) => userPreference.type,
   })
 );
+
+// type still not correct
+test.get("COLOR_MODE")?.type;
+//                          ^?
+
+// @ts-expect-error -- nicely inferred here
+test.get("TEST")?.type;
