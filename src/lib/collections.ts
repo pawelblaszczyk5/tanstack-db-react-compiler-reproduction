@@ -1,85 +1,84 @@
-import { createCollection } from "@tanstack/react-db";
-import { electricCollectionOptions } from "@tanstack/electric-db-collection";
-import { selectConfigSchema, selectTodoSchema } from "../db/validation";
-import { api } from "./api";
+import {
+  createCollection,
+  eq,
+  localOnlyCollectionOptions,
+  localStorageCollectionOptions,
+  useLiveQuery,
+} from "@tanstack/react-db";
+import { Schema } from "effect";
 
-// Electric Todo Collection
-export const electricTodoCollection = createCollection(
-  electricCollectionOptions({
-    id: `todos`,
-    shapeOptions: {
-      url: `http://localhost:3003/v1/shape`,
-      params: {
-        table: `todos`,
-      },
-      parser: {
-        timestamptz: (date: string) => new Date(date),
-      },
-    },
-    getKey: (item) => item.id,
-    schema: selectTodoSchema,
-    onInsert: async ({ transaction }) => {
-      const {
-        id: _id,
-        created_at: _f,
-        updated_at: _ff,
-        ...modified
-      } = transaction.mutations[0].modified;
-      const response = await api.todos.create(modified);
-      return { txid: response.txid };
-    },
-    onUpdate: async ({ transaction }) => {
-      const txids = await Promise.all(
-        transaction.mutations.map(async (mutation) => {
-          const { original, changes } = mutation;
-          const response = await api.todos.update(original.id, changes);
-          return response.txid;
-        })
-      );
-      return { txid: txids };
-    },
-    onDelete: async ({ transaction }) => {
-      const txids = await Promise.all(
-        transaction.mutations.map(async (mutation) => {
-          const { original } = mutation;
-          const response = await api.todos.delete(original.id);
-          return response.txid;
-        })
-      );
-      return { txid: txids };
-    },
+const UserPreferenceShape = Schema.Union(
+  Schema.Struct({
+    type: Schema.Literal("COLOR_MODE"),
+    value: Schema.Literal("DARK", "LIGHT", "SYSTEM"),
+  }),
+  Schema.Struct({
+    type: Schema.Literal("LANGUAGE"),
+    value: Schema.Literal("pl-PL", "en-US"),
   })
 );
 
-// Electric Config Collection
-export const electricConfigCollection = createCollection(
-  electricCollectionOptions({
-    id: `config`,
-    shapeOptions: {
-      url: `http://localhost:3003/v1/shape`,
-      params: {
-        table: `config`,
-      },
-      parser: {
-        timestamptz: (date: string) => new Date(date),
-      },
-    },
-    getKey: (item) => item.id,
-    schema: selectConfigSchema,
-    onInsert: async ({ transaction }) => {
-      const modified = transaction.mutations[0].modified;
-      const response = await api.config.create(modified);
-      return { txid: response.txid };
-    },
-    onUpdate: async ({ transaction }) => {
-      const txids = await Promise.all(
-        transaction.mutations.map(async (mutation) => {
-          const { original, changes } = mutation;
-          const response = await api.config.update(original.id, changes);
-          return response.txid;
-        })
-      );
-      return { txid: txids };
-    },
+// Type of key is inferred here as number | string instead of "COLOR_MODE" | "LANGUAGE"
+export const userPreferencesCollection = createCollection(
+  localStorageCollectionOptions({
+    id: "userPreferences",
+    schema: Schema.standardSchemaV1(UserPreferenceShape),
+    storage: globalThis.localStorage ?? {},
+    storageEventApi: globalThis,
+    storageKey: "user-preferences",
+    getKey: (userPreference) => userPreference.type,
+  })
+);
+
+// Can't discriminate union with functional where
+export const useLanguageFunctionalWhere = () => {
+  const { data: preferences } = useLiveQuery((q) =>
+    q
+      .from({ userPreferencesCollection })
+      .fn.where(
+        ({ userPreferencesCollection }) =>
+          userPreferencesCollection.type === "LANGUAGE"
+      )
+  );
+
+  const preference = preferences.at(0);
+
+  preference?.type;
+  //            ^?
+  preference?.value;
+  //             ^?;
+};
+
+// Can't discriminate union with standard where
+
+export const useLanguageStandardWhere = () => {
+  const { data: preferences } = useLiveQuery((q) =>
+    q
+      .from({ userPreferencesCollection })
+      .where(({ userPreferencesCollection }) =>
+        eq(userPreferencesCollection.type, "LANGUAGE")
+      )
+  );
+
+  const preference = preferences.at(0);
+
+  preference?.type;
+  //            ^?
+  preference?.value;
+  //             ^?;
+};
+
+// key is number | string here and doesn't narrow down
+userPreferencesCollection.update();
+
+// key is number | string here and doesn't narrow down
+userPreferencesCollection.get();
+
+// local only collection for example correctly infers key type but still doesn't discriminate in any of examples above
+export const test = createCollection(
+  localOnlyCollectionOptions({
+    id: "userPreferences",
+    schema: Schema.standardSchemaV1(UserPreferenceShape),
+    getKey: (userPreference) => userPreference.type,
   })
 );
